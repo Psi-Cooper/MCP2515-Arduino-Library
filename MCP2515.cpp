@@ -39,12 +39,13 @@ void MCP2515::begin(){
 	SPI.setBitOrder(MSBFIRST);
 	
 	//reset(); //software reset
-	digitalWrite(RESET_PIN, HIGH);
-	delay(10);
-	digitalWrite(RESET_PIN, LOW);
-	delay(100);
-	digitalWrite(RESET_PIN, HIGH);
-	delay(100);
+	//digitalWrite(RESET_PIN, HIGH);
+	//delay(10);
+	//digitalWrite(RESET_PIN, LOW);
+	//delay(100);
+	//digitalWrite(RESET_PIN, HIGH);
+	//delay(100);
+	reset();
 }
 
 /******************
@@ -335,99 +336,99 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	// 1 = Message was aborted
 //	// 0 = Message transmitted successfully
 //bool MCP2515::ABTFTX0(){
-	bool retVal;
-	retVal = ABTF(TXB0CTRL);
-	return retVal;
+//ool retVal;
+//etVal = ABTF(TXB0CTRL);
+//eturn retVal;
 //}
 //bool MCP2515::ABTFTX1(){
-	bool retVal;
-	retVal = ABTF(TXB1CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = ABTF(TXB1CTRL);
+//	return retVal;
 //}
 //bool MCP2515::ABTFTX2(){
-	bool retVal;
-	retVal = ABTF(TXB2CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = ABTF(TXB2CTRL);
+//	return retVal;
 //}
 //
 //bool MCP2515::ABTF(byte address){
-	byte retVal;
-	retVal = ((read(address)&0x40)==0x40);
-	return retVal;
+//	byte retVal;
+//	retVal = ((read(address)&0x40)==0x40);
+//	return retVal;
 //}
 //
 //// Message lost arbitration bit
 //	// 1 = Message lost arbitration
 //	// 0 = Message did not lose arbitration
 //bool MCP2515::MLOATX0(){
-	bool retVal;
-	retVal = MLOA(TXB0CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = MLOA(TXB0CTRL);
+//	return retVal;
 //}
 //bool MCP2515::MLOATX1(){
-	bool retVal;
-	retVal = MLOA(TXB1CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = MLOA(TXB1CTRL);
+//	return retVal;
 //}
 //bool MCP2515::MLOATX2(){
-	bool retVal;
-	retVal = MLOA(TXB2CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = MLOA(TXB2CTRL);
+//	return retVal;
 //}
 //
 //bool MCP2515::MLOA(byte address){
-	byte retVal;
-	retVal = ((read(address)&0x20)==0x20);
-	return retVal;
+//	byte retVal;
+//	retVal = ((read(address)&0x20)==0x20);
+//	return retVal;
 //}
 //
 //// Transmission Error Detected Bit
 //	// 1 = Bus error occurred during transmission
 //	// 0 = No bus error occurred during transmission
 //bool MCP2515::TXERRTX0(){
-	bool retVal;
-	retVal = TXERR(TXB0CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXERR(TXB0CTRL);
+//	return retVal;
 //}
 //bool MCP2515::TXERRTX1(){
-	bool retVal;
-	retVal = TXERR(TXB1CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXERR(TXB1CTRL);
+//	return retVal;
 //}
 //bool MCP2515::TXERRTX2(){
-	bool retVal;
-	retVal = TXERR(TXB2CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXERR(TXB2CTRL);
+//	return retVal;
 //}
 //
 //bool MCP2515::TXERR(byte address){
-	byte retVal;
-	retVal = ((read(address)&0x10)==0x10);
-	return retVal;
+//	byte retVal;
+//	retVal = ((read(address)&0x10)==0x10);
+//	return retVal;
 //}
 //
 //// Message Transmit Request Bit
 //	// 1 = Buffer pending transmission - cleared when sent
 //	// 0 = Not pending transmission
 //bool MCP2515::TXREQTX0(){
-	bool retVal;
-	retVal = TXREQ(TXB0CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXREQ(TXB0CTRL);
+//	return retVal;
 //}
 //bool MCP2515::TXREQTX1(){
-	bool retVal;
-	retVal = TXREQ(TXB1CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXREQ(TXB1CTRL);
+//	return retVal;
 //}
 //bool MCP2515::TXREQTX2(){
-	bool retVal;
-	retVal = TXREQ(TXB2CTRL);
-	return retVal;
+//	bool retVal;
+//	retVal = TXREQ(TXB2CTRL);
+//	return retVal;
 //}
 //bool MCP2515::TXREQ(byte address){
-	byte retVal;
-	retVal = ((read(address)&0x08)==0x08);
-	return retVal;
+//	byte retVal;
+//	retVal = ((read(address)&0x08)==0x08);
+//	return retVal;
 //}
 //
 //// Abort Message Transmission
@@ -453,24 +454,24 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	setPriority(TXB2CTRL, prio);
 //}
 //void MCP2515::setPriority(byte address, transmitPriority prio){
-	byte setVal = 0x00;
-	
-	switch(prio)
-	{
-		case HIGHEST:
-			setVal = 0x03;
-			break;
-		case HIGH:
-			setVal = 0x02;
-			break;
-		case LOW:
-			setVal = 0x01;
-			break;
-		case LOWEST:
-			setVal = 0x00;
-			break;
-	}
-	modify(address, 0x03, setVal);
+//	byte setVal = 0x00;
+//	
+//	switch(prio)
+//	{
+//		case HIGHEST:
+//			setVal = 0x03;
+//			break;
+//		case HIGH:
+//			setVal = 0x02;
+//			break;
+//		case LOW:
+//			setVal = 0x01;
+//			break;
+//		case LOWEST:
+//			setVal = 0x00;
+//			break;
+//	}
+//	modify(address, 0x03, setVal);
 //}
 //
 ////Set RTS pin modes (input or RTS on falling edge)
@@ -485,9 +486,9 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	modify(TXRTSCTRL, 0x04, 0x00);
 //}
 //void MCP2515::setAllRTSPinsInput(){
-	setB0RTSPinInput;
-	setB1RTSPinInput;
-	setB2RTSPinInput;
+//	setB0RTSPinInput;
+//	setB1RTSPinInput;
+//	setB2RTSPinInput;
 //}
 ////Set as RTS Pins
 //void MCP2515::setB0RTSPinRTS(){
@@ -500,28 +501,26 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	modify(TXRTSCTRL, 0x04, 0x0F);
 //}
 //void MCP2515::setAllRTSPinsRTS(){
-	setB0RTSPinRTS;
-	setB1RTSPinRTS;
-	setB2RTSPinRTS;
+//	setB0RTSPinRTS;
+//	setB1RTSPinRTS;
+//	setB2RTSPinRTS;
 //}
 ////Read RTS pin values - only valid in digital input mode
 //bool MCP2515::readB0RTS(){
-	byte retVal;
-	retVal = (read(TXRTSCTRL)&0x08)==0x08;
-	return retVal;
+//	byte retVal;
+//	retVal = (read(TXRTSCTRL)&0x08)==0x08;
+//	return retVal;
 //}
 //bool MCP2515::readB1RTS(){
-	byte retVal;
-	retVal = (read(TXRTSCTRL)&0x10)==0x10;
-	return retVal;
+//	byte retVal;
+//	retVal = (read(TXRTSCTRL)&0x10)==0x10;
+//	return retVal;
 //}
 //bool MCP2515::readB2RTS(){
-	byte retVal;
-	retVal = (read(TXRTSCTRL)&0x20)==0x20;
-	return retVal;
+//	byte retVal;
+//	retVal = (read(TXRTSCTRL)&0x20)==0x20;
+//	return retVal;
 //}
-
-
 ///******************
 //	Message Reception Features - Datasheet section 4
 //
@@ -529,150 +528,150 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //*/
 //
 //void MCP2515::RXB0ReceiveAny(){
-	//Allow reception of any messages regardless of filters to RX Buffer 0
-	modify(RXB0CTRL, 0x60, 0xFF);
+//	//Allow reception of any messages regardless of filters to RX Buffer 0
+//	modify(RXB0CTRL, 0x60, 0xFF);
 //}
 //void MCP2515::RXB0ReceiveExt(){
-	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
-	modify(RXB0CTRL, 0x60, 0x40);
+//	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
+//	modify(RXB0CTRL, 0x60, 0x40);
 //}
 //void MCP2515::RXB0ReceiveStd(){
-	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
-	modify(RXB0CTRL, 0x60, 0x20);
+//	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
+//	modify(RXB0CTRL, 0x60, 0x20);
 //}
 //void MCP2515::RXB0ReceiveValid(){
-	//Allow reception of any messages matching filter criteria of RX Buffer 0
-	//DEFAULT SETUP
-	modify(RXB0CTRL, 0x60, 0x00);
+//	//Allow reception of any messages matching filter criteria of RX Buffer 0
+//	//DEFAULT SETUP
+//	modify(RXB0CTRL, 0x60, 0x00);
 //}
 //
 //void MCP2515::RXB1ReceiveAny(){
-	//Allow reception of any messages regardless of filters to RX Buffer 0
-	modify(RXB1CTRL, 0x60, 0xFF);
+//	//Allow reception of any messages regardless of filters to RX Buffer 0
+//	modify(RXB1CTRL, 0x60, 0xFF);
 //}
 //void MCP2515::RXB1ReceiveExt(){
-	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
-	modify(RXB1CTRL, 0x60, 0x40);
+//	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
+//	modify(RXB1CTRL, 0x60, 0x40);
 //}
 //void MCP2515::RXB1ReceiveStd(){
-	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
-	modify(RXB1CTRL, 0x60, 0x20);
+//	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
+//	modify(RXB1CTRL, 0x60, 0x20);
 //}
 //void MCP2515::RXB1ReceiveValid(){
-	//Allow reception of any messages matching filter criteria of RX Buffer 0
-	//DEFAULT SETUP
-	modify(RXB1CTRL, 0x60, 0x00);
+//	//Allow reception of any messages matching filter criteria of RX Buffer 0
+//	//DEFAULT SETUP
+//	modify(RXB1CTRL, 0x60, 0x00);
 //}
 //
 //bool MCP2515::receivedRTRRXB0(){
-	byte retVal;
-	retVal = read(RXB0CTRL);
-	bool RTR;
-	RTR = ((retVal >>3)&0x01)==1;
-	return RTR;
+//	byte retVal;
+//	retVal = read(RXB0CTRL);
+//	bool RTR;
+//	RTR = ((retVal >>3)&0x01)==1;
+//	return RTR;
 //}
 //
 //// untested
 //bool MCP2515::receivedRTRRXB1(){
-	byte retVal;
-	retVal = read(RXB1CTRL);
-	bool RTR;
-	RTR = ((retVal >>3)&0x01)==1;
-	return RTR;
+//	byte retVal;
+//	retVal = read(RXB1CTRL);
+//	bool RTR;
+//	RTR = ((retVal >>3)&0x01)==1;
+//	return RTR;
 //}
 //
 //void MCP2515::enableRXRollover(){
-	//Enable rollover of messages from RXB0 to RXB1 if full and criteria met
-	modify(RXB0CTRL, 0x04, 0xFF);
+//	//Enable rollover of messages from RXB0 to RXB1 if full and criteria met
+//	modify(RXB0CTRL, 0x04, 0xFF);
 //}
 //void MCP2515::disableRXRollover(){
-	//Disable rollover of messages from RXB0 to RXB1 if full and criteria met
-	modify(RXB0CTRL, 0x04, 0x00);
+//	//Disable rollover of messages from RXB0 to RXB1 if full and criteria met
+//	modify(RXB0CTRL, 0x04, 0x00);
 //}
 //
 //byte MCP2515::RXB0FilterHit(){
-	//Returns filter that accepted message
-	byte retVal;
-	retVal = read(RXB0CTRL)&0x01;
-	return retVal;
+//	//Returns filter that accepted message
+//	byte retVal;
+//	retVal = read(RXB0CTRL)&0x01;
+//	return retVal;
 //}
 //byte MCP2515::RXB1FilterHit(){
-	//Returns filter that accepted message
-	byte retVal;
-	retVal = read(RXB1CTRL)&0x07;
-	return retVal;
+//	//Returns filter that accepted message
+//	byte retVal;
+//	retVal = read(RXB1CTRL)&0x07;
+//	return retVal;
 //}
 //
 //void MCP2515::RX0PinModeOutput(){
-	//Pin set as digital output
-	modify(BFPCTRL, 0x01, 0x00);
+//	//Pin set as digital output
+//	modify(BFPCTRL, 0x01, 0x00);
 //}
 //void MCP2515::RX1PinModeOutput(){
-	//Pin set as digital output
-	modify(BFPCTRL, 0x02, 0x00);
+//	//Pin set as digital output
+//	modify(BFPCTRL, 0x02, 0x00);
 //}
 //void MCP2515::RXPinsModeOutput(){
-	//Pins set as digital output
-	RX0PinModeOutput;
-	RX1PinModeOutput;
+//	//Pins set as digital output
+//	RX0PinModeOutput;
+//	RX1PinModeOutput;
 //}
 //
 //void MCP2515::RX0PinModeInt(){
-	//Pin set as interrupt on TX buffer full
-	modify(BFPCTRL, 0x01, 0xFF);
+//	//Pin set as interrupt on TX buffer full
+//	modify(BFPCTRL, 0x01, 0xFF);
 //}
 //void MCP2515::RX1PinModeInt(){
-	//Pin set as interrupt on TX buffer full
-	modify(BFPCTRL, 0x02, 0xFF);
+//	//Pin set as interrupt on TX buffer full
+//	modify(BFPCTRL, 0x02, 0xFF);
 //}
 //void MCP2515::RXPinsModeInt(){
-	RX0PinModeInt;
-	RX1PinModeInt;
+//	RX0PinModeInt;
+//	RX1PinModeInt;
 //}
 //
 //void MCP2515::RXB0Enable(){
-	//RX0 Pin function enabled
-	modify(BFPCTRL, 0x04, 0xFF);
+//	//RX0 Pin function enabled
+//	modify(BFPCTRL, 0x04, 0xFF);
 //}
 //void MCP2515::RXB1Enable(){
-	//RX1 Pin function enabled
-	modify(BFPCTRL, 0x08, 0xFF);
+//	//RX1 Pin function enabled
+//	modify(BFPCTRL, 0x08, 0xFF);
 //}
 //void MCP2515::RXPinsEnable(){
-	//Enable RX Pin functions
-	RXB0Enable;
-	RXB1Enable;
+//	//Enable RX Pin functions
+//	RXB0Enable;
+//	RXB1Enable;
 //}
 //
 //void MCP2515::RXB0Disable(){
-	//RX0 Pin function enabled
-	modify(BFPCTRL, 0x04, 0x00);
+//	//RX0 Pin function enabled
+//	modify(BFPCTRL, 0x04, 0x00);
 //}
 //void MCP2515::RXB1Disable(){
-	//RX1 Pin function enabled
-	modify(BFPCTRL, 0x08, 0x00);
+//	//RX1 Pin function enabled
+//	modify(BFPCTRL, 0x08, 0x00);
 //}
 //void MCP2515::RXPinsDisable(){
-	//Enable RX Pin functions
-	RXB0Disable;
-	RXB1Disable;
+//	//Enable RX Pin functions
+//	RXB0Disable;
+//	RXB1Disable;
 //}
 //
 //void MCP2515::RXB0PinHigh(){
-	//set RXB0 pin high - only valid when configured as output
-	modify(BFPCTRL, 0x10, 0xFF);
+//	//set RXB0 pin high - only valid when configured as output
+//	modify(BFPCTRL, 0x10, 0xFF);
 //}
 //void MCP2515::RXB0PinLow(){
-	//set RXB0 pin low- only valid when configured as output
-	modify(BFPCTRL, 0x10, 0x00);
+//	//set RXB0 pin low- only valid when configured as output
+//	modify(BFPCTRL, 0x10, 0x00);
 //}
 //void MCP2515::RXB1PinHigh(){
-	//set RXB1 pin high - only valid when configured as output
-	modify(BFPCTRL, 0x20, 0xFF);
+//	//set RXB1 pin high - only valid when configured as output
+//	modify(BFPCTRL, 0x20, 0xFF);
 //}
 //void MCP2515::RXB1PinLow(){
-	//set RXB1 pin low- only valid when configured as output
-	modify(BFPCTRL, 0x20, 0x00);
+//	//set RXB1 pin low- only valid when configured as output
+//	modify(BFPCTRL, 0x20, 0x00);
 //}
 //
 //
@@ -680,52 +679,52 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	MASKS AND FILTERS
 //*/
 //void MCP2515::setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3){
-	//only works in configuration mode, up to user to put device in correct mode
-	write(address, b0);
-	write(address+1,b1);
-	write(address+2,b2);
-	write(address+3,b3);
+//	//only works in configuration mode, up to user to put device in correct mode
+//	write(address, b0);
+//	write(address+1,b1);
+//	write(address+2,b2);
+//	write(address+3,b3);
 //}
 //void MCP2515::resetFiltersAndMasks(){
-	setMaskOrFilter(FILTER0, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(FILTER1, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(FILTER2, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(FILTER3, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(FILTER4, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(FILTER5, 0x00,0x00,0x00,0x00);
-	
-	setMaskOrFilter(MASK0, 0x00,0x00,0x00,0x00);
-	setMaskOrFilter(MASK1, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER0, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER1, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER2, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER3, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER4, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(FILTER5, 0x00,0x00,0x00,0x00);
+//	
+//	setMaskOrFilter(MASK0, 0x00,0x00,0x00,0x00);
+//	setMaskOrFilter(MASK1, 0x00,0x00,0x00,0x00);
 //}
 //
 ///******************
 //	Bit Timing
 //*/
 //void MCP2515::SAMConfig(bool config){
-	//Device must been in configuration mode
-	if (config)
-	{
-		//Bus sampled 3 times at sample point
-		modify(CNF2, 0x40, 0xFF);	
-	}
-	else
-	{
-		//Bus sampled single time at sample point
-		modify(CNF2, 0x40, 0x00);
-	}
+//	//Device must been in configuration mode
+//	if (config)
+//	{
+//		//Bus sampled 3 times at sample point
+//		modify(CNF2, 0x40, 0xFF);	
+//	}
+//	else
+//	{
+//		//Bus sampled single time at sample point
+//		modify(CNF2, 0x40, 0x00);
+//	}
 //}
 //
 //void MCP2515::setSOFBit(bool config){
-	if (config)
-	{
-		//CLKOUT pin enabled for SOF signal
-		modify(CNF3, 0x80, 0xFF);
-	}
-	else
-	{
-		//CLKOUT pin enabled for clockout function
-		modify(CNF3, 0x80, 0x00);
-	}
+//	if (config)
+//	{
+//		//CLKOUT pin enabled for SOF signal
+//		modify(CNF3, 0x80, 0xFF);
+//	}
+//	else
+//	{
+//		//CLKOUT pin enabled for clockout function
+//		modify(CNF3, 0x80, 0x00);
+//	}
 //} 
 //
 ////NO IDEA WHAT THIS DOES - could restrict wake up to only work when filter check passed 
@@ -740,83 +739,81 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	Interrupts
 //*/
 //void MCP2515::MERREInt(bool config){
-	// Interrupt on error during message reception or transmission
-	if (config)
-	{modify(CANINTE, 0x80, 0xFF);}
-	else {modify(CANINTE, 0x80, 0x00);}
+//	// Interrupt on error during message reception or transmission
+//	if (config)
+//	{modify(CANINTE, 0x80, 0xFF);}
+//	else {modify(CANINTE, 0x80, 0x00);}
 //}
 //void MCP2515::WAKIEInt(bool config){
-	// Interrupt on CAN bus activity
-	if (config)
-	{modify(CANINTE, 0x40, 0xFF);}
-	else {modify(CANINTE, 0x40, 0x00);}
+//	// Interrupt on CAN bus activity
+//	if (config)
+//	{modify(CANINTE, 0x40, 0xFF);}
+//	else {modify(CANINTE, 0x40, 0x00);}
 //}
 //void MCP2515::ERRIEInt(bool config){
-	// Interrupt on EFLG error condition change
-	if (config)
-	{modify(CANINTE, 0x20, 0xFF);}
-	else {modify(CANINTE, 0x20, 0x00);}
+//	// Interrupt on EFLG error condition change
+//	if (config)
+//	{modify(CANINTE, 0x20, 0xFF);}
+//	else {modify(CANINTE, 0x20, 0x00);}
 //}
 //void MCP2515::TX2IEInt(bool config){
-	// Interrupt on TXB2 becoming empty
-	if (config)
-	{modify(CANINTE, 0x10, 0xFF);}
-	else {modify(CANINTE, 0x10, 0x00);}
+//	// Interrupt on TXB2 becoming empty
+//	if (config)
+//	{modify(CANINTE, 0x10, 0xFF);}
+//	else {modify(CANINTE, 0x10, 0x00);}
 //}
 //void MCP2515::TX1IEInt(bool config){
-	// Interrupt on TXB1 becoming empty
-	if (config)
-	{modify(CANINTE, 0x08, 0xFF);}
-	else {modify(CANINTE, 0x08, 0x00);}
+//	// Interrupt on TXB1 becoming empty
+//	if (config)
+//	{modify(CANINTE, 0x08, 0xFF);}
+//	else {modify(CANINTE, 0x08, 0x00);}
 //}
 //void MCP2515::TX0IEInt(bool config){
-	// Interrupt on TXB0 becoming empty
-	if (config)
-	{modify(CANINTE, 0x04, 0xFF);}
-	else {modify(CANINTE, 0x04, 0x00);}
+//	// Interrupt on TXB0 becoming empty
+//	if (config)
+//	{modify(CANINTE, 0x04, 0xFF);}
+//	else {modify(CANINTE, 0x04, 0x00);}
 //}
 //void MCP2515::RX1IEInt(bool config){
-	// Interrupt when message received in RXB1
-	if (config)
-	{modify(CANINTE, 0x02, 0xFF);}
-	else {modify(CANINTE, 0x02, 0x00);}
+//	// Interrupt when message received in RXB1
+//	if (config)
+//	{modify(CANINTE, 0x02, 0xFF);}
+//	else {modify(CANINTE, 0x02, 0x00);}
 //}
 //void MCP2515::RX0IEInt(bool config){
-	// Interrupt when message received in RXB0
-	if (config)
-	{modify(CANINTE, 0x01, 0xFF);}
-	else {modify(CANINTE, 0x01, 0x00);}
+//	// Interrupt when message received in RXB0
+//	if (config)
+//	{modify(CANINTE, 0x01, 0xFF);}
+//	else {modify(CANINTE, 0x01, 0x00);}
 //}
 //
 //byte MCP2515::readInterruptFlags(){
-	byte retVal;
-	retVal = read(CANINTF);
-	return retVal;
+//	byte retVal;
+//	retVal = read(CANINTF);
+//	return retVal;
 //}
 //
 //void MCP2515::resetInterruptBit(byte mask){
-	//reset interrupts using mask - page 51 of datasheet
-	modify(CANINTF, mask, 0x00);
+//	//reset interrupts using mask - page 51 of datasheet
+//	modify(CANINTF, mask, 0x00);
 //}
-
-/******************
-	Error functions
-*/
-
+//*****************
+//rror functions
+//
 //byte MCP2515::readTEC(){
-	byte retVal;
-	retVal = read(TEC);
-	return retVal;
+//	byte retVal;
+//	retVal = read(TEC);
+//	return retVal;
 //}
 //byte MCP2515::readREC(){
-	byte retVal;
-	retVal = read(TEC);
-	return retVal;
+//	byte retVal;
+//	retVal = read(TEC);
+//	return retVal;
 //}
 //byte MCP2515::readEFLG(){
-	byte retVal;
-	retVal = read(EFLG);
-	return retVal;
+//	byte retVal;
+//	retVal = read(EFLG);
+//	return retVal;
 //}
 //void MCP2515::resetRX1OVRInt(){
 //	modify(EFLG, 0x80, 0x00);
@@ -824,57 +821,56 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //void MCP2515::resetRX0OVRInt(){
 //	modify(EFLG, 0x40, 0x00);
 //}
-
-/******************
-	Configuration Mode Functions
-	// requires device in config mode to work
-*/
+//*****************
+//onfiguration Mode Functions
+/// requires device in config mode to work
+//
 //void MCP2515::ABATBit(bool config){
-	//If 1 - abort all pending transmit buffers
-	//If 0 - Terminate request to abort all pending transmit buffers
-	if (config)
-	{modify(CANCTRL, 0x10, 0xFF);}
-	else {modify(CANCTRL, 0x10, 0x00);}
+//	//If 1 - abort all pending transmit buffers
+//	//If 0 - Terminate request to abort all pending transmit buffers
+//	if (config)
+//	{modify(CANCTRL, 0x10, 0xFF);}
+//	else {modify(CANCTRL, 0x10, 0x00);}
 //}
 //void MCP2515::OSMEnable(){
-	//Message will only attempt transmission one time
-	modify(CANCTRL, 0x80, 0xFF);
+//	//Message will only attempt transmission one time
+//	modify(CANCTRL, 0x80, 0xFF);
 //}
 //void MCP2515::OSMDisable(){
-	//Message will reattempt transmission if required
-	modify(CANCTRL, 0x80, 0x00);
+//	//Message will reattempt transmission if required
+//	modify(CANCTRL, 0x80, 0x00);
 //}
 //void MCP2515::CLKOUTEnable(){
-	//Clock out pin enabled
-	modify(CANCTRL, 0x04, 0xFF);
+//	//Clock out pin enabled
+//	modify(CANCTRL, 0x04, 0xFF);
 //}
 //void MCP2515::CLKOUTDisable(){
-	//Clock out pin disabled
-	modify(CANCTRL, 0x04, 0x00);
+//	//Clock out pin disabled
+//	modify(CANCTRL, 0x04, 0x00);
 //}
 //void MCP2515::CLKOUTPrescalar(int scalar){
-	switch(scalar) {
-		case 1:
-				modify(CANCTRL, 0x03, 0x00);
-				break;
-		case 2:
-				modify(CANCTRL, 0x03, 0x01);
-				break;
-		case 4:
-				modify(CANCTRL, 0x03, 0x02);
-				break;
-		case 8:
-				modify(CANCTRL, 0x03, 0x03);
-				break;
-		default:
-				break;
-	}
+//	switch(scalar) {
+//		case 1:
+//				modify(CANCTRL, 0x03, 0x00);
+//				break;
+//		case 2:
+//				modify(CANCTRL, 0x03, 0x01);
+//				break;
+//		case 4:
+//				modify(CANCTRL, 0x03, 0x02);
+//				break;
+//		case 8:
+//				modify(CANCTRL, 0x03, 0x03);
+//				break;
+//		default:
+//				break;
+//	}
 //}
 //byte MCP2515::readICOD(){
-	//returns 3 bit value of ICOD - interrupt flag code bits
-	byte retVal;
-	retVal = (read(CANSTAT)&0x0E)>>1;
-	return retVal;
+//	//returns 3 bit value of ICOD - interrupt flag code bits
+//	byte retVal;
+//	retVal = (read(CANSTAT)&0x0E)>>1;
+//	return retVal;
 //}
 
 

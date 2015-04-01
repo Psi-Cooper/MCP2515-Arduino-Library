@@ -156,7 +156,7 @@ values for 20MHz resonator when I get.
 
 enum MCP2515Mode {CONFIGURATION, NORMAL, LISTEN, SLEEP, LOOPBACK};
 enum messageType {STANDARD, EXTENDED, STANDARDREMOTE, EXTENDEDREMOTE};
-enum transmitPriority {HIGHEST, HIGH, LOW, LOWEST};
+//enum transmitPriority {HIGHEST, HIGH, LOW, LOWEST};
 
 class MCP2515
 {

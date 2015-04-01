@@ -7,7 +7,18 @@ modify		KEYWORD 2
 setBitRate	KEYWORD 2
 setMode		KEYWORD 2
 multiWrite	KEYWORD 2
+RXStatus	KEYWORD 2
+
 loadTXBuffer0	KEYWORD 2
 loadTXBuffer1	KEYWORD 2
 loadTXBuffer2	KEYWORD 2
 loadTXBuffer	KEYWORD 2
+
+sendTXBuffer0	KEYWORD 2	
+sendTXBuffer1	KEYWORD 2
+sendTXBuffer2	KEYWORD 2
+sendTXBuffer 	KEYWORD 2
+
+readRXBuffer 	KEYWORD 2
+readRXBuffer0 	KEYWORD 2
+readRXBuffer1 	KEYWORD 2
