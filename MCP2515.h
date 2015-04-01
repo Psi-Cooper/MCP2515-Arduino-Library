@@ -172,14 +172,11 @@ public:
 	//START WITH MODE SET AND RESET FUNCTIONS
 
 	void begin();	//set up controller
-	void reset();	//reset controller - perform on startup
-	byte read(byte address);
-	void write(byte address, byte data);
-	void modify(byte address, byte mask, byte data);
+	
 	void setBitRate(int bitRate);
 	//void setMode(MCP2515Mode mode);
 	int setMode(MCP2515Mode mode);
-	void multiWrite(byte address, byte IDBytes[], byte dataBytes[], int DLC);
+	
 	
 	void loadTXBuffer(uint32_t ID, byte command, messageType frameType, int DLC, byte dataBytes[]);
 	void loadTXBuffer0(uint32_t ID, messageType frameType, int dataLength, byte dataBytes[]);
@@ -191,21 +188,17 @@ public:
 	void sendTXBuffer2();
 	void sendTXBuffer(byte RTSCOMMAND);
 
-	//void readRXBuffer(byte command, uint32_t *id_out, byte *DLC, byte data[], string frameType);
-
-	byte RXStatus();
-
-	//void disableFilters();
-	//void disableRXB0Filters();
-	//void disableRXB1Filters();
-	//void enableBufferRollover();
-	//void disableBufferRollover();
-	bool receivedRTRRXB0();
-	bool receivedRTRRXB1();
 
 	void readRXBuffer(byte command, byte *DLC, byte *data, uint32_t* ID, byte* ext, byte* remote);
 	void readRXBuffer0(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote);
 	void readRXBuffer1(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote);
+
+	byte RXStatus();
+	void reset();	//reset controller - perform on startup
+	byte read(byte address);
+	void write(byte address, byte data);
+	void multiWrite(byte address, byte IDBytes[], byte dataBytes[], int DLC);
+	void modify(byte address, byte mask, byte data);
 };
 
 #endif

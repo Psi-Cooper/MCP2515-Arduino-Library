@@ -146,41 +146,6 @@ int MCP2515::setMode(MCP2515Mode mode){
 	return retVal;
 }
 
-byte MCP2515::RXStatus(){
-	byte retVal;
-	digitalWrite(_ss, LOW);
-	SPI.transfer(RXSTATUS);
-	retVal = SPI.transfer(0xFF);	
-	digitalWrite(_ss, HIGH);
-	return retVal;
-}
-
-
-/******************
-	Transfer Buffer Request To Send
-*/
-void MCP2515::sendTXBuffer0()
-{
-	sendTXBuffer(RTSTXB0);
-}
-void MCP2515::sendTXBuffer1()
-{
-	sendTXBuffer(RTSTXB1);
-}
-void MCP2515::sendTXBuffer2()
-{
-	sendTXBuffer(RTSTXB2);
-}
-void MCP2515::sendTXBuffer(byte RTSCOMMAND)
-{
-	digitalWrite(_ss, LOW);
-	delay(10);
-	SPI.transfer(RTSCOMMAND);
-	delay(10);
-	digitalWrite(_ss,HIGH);
-	delay(1);
-}
-
 /******************
 	Transfer Buffer Load Functions
 */
@@ -260,19 +225,40 @@ void MCP2515::loadTXBuffer(uint32_t ID, byte command, messageType frameType, int
 	}
 }
 
+/******************
+	Transfer Buffer Request To Send
+*/
+void MCP2515::sendTXBuffer0()
+{
+	sendTXBuffer(RTSTXB0);
+}
+void MCP2515::sendTXBuffer1()
+{
+	sendTXBuffer(RTSTXB1);
+}
+void MCP2515::sendTXBuffer2()
+{
+	sendTXBuffer(RTSTXB2);
+}
+void MCP2515::sendTXBuffer(byte RTSCOMMAND)
+{
+	digitalWrite(_ss, LOW);
+	delay(10);
+	SPI.transfer(RTSCOMMAND);
+	delay(10);
+	digitalWrite(_ss,HIGH);
+	delay(1);
+}
 
 /******************
 	Receive buffer read functions
 */
-void MCP2515::readRXBuffer0(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote)
-{
+void MCP2515::readRXBuffer0(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote){
 	readRXBuffer(READRX0ID, DLC, data, ID, ext, remote);
 }
-void MCP2515::readRXBuffer1(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote)
-{
+void MCP2515::readRXBuffer1(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote){
 	readRXBuffer(READRX1ID, DLC, data, ID, ext, remote);
 }
-
 void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote)
 {
 	byte RXDLC;
@@ -891,6 +877,17 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 	return retVal;
 //}
 
+
+
+
+byte MCP2515::RXStatus(){
+	byte retVal;
+	digitalWrite(_ss, LOW);
+	SPI.transfer(RXSTATUS);
+	retVal = SPI.transfer(0xFF);	
+	digitalWrite(_ss, HIGH);
+	return retVal;
+}
 
 /******************
 	Software reset over SPI of MCP2515
