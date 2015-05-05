@@ -9,10 +9,9 @@ Created by: Simon Cooper
 University of Bath
 Integrated Mechanical and Electrical Engineering Final Year Project
 Designed to include the full functionality of the MCP2515 CAN controller
-With references to the library produced by Kyle Crockett
 
 Designed to be used with the CAN shield designed by Simon Cooper
-using a 16MHz oscillator. (20MHz quartz crystal for >125Kh)
+using a 16MHz oscillator. (20MHz quartz crystal support to be added)
 */
 #define RESET_PIN 2
 #define INT_PIN 3
@@ -149,7 +148,7 @@ values for 20MHz resonator when I get.
 // Cannot be supported
 
 // 1000 kbps - Bit time = 8TQ
-#define CNF1_1000 	0x80 //SJQ = 3TQ BRP = 0
+#define CNF1_1000 	0x80 //SJW = 3TQ BRP = 0
 #define CNF2_1000	0x90 //
 #define CNF3_1000	0x02
 
@@ -199,6 +198,43 @@ public:
 	void write(byte address, byte data);
 	void multiWrite(byte address, byte IDBytes[], byte dataBytes[], int DLC);
 	void modify(byte address, byte mask, byte data);
+
+	//Message Reception
+	void RXB0ReceiveAny();
+	void RXB0ReceiveExt();
+	void RXB0ReceiveStd();
+	void RXB0ReceiveValid();
+	void RXB1ReceiveAny();
+	void RXB1ReceiveExt();
+	void RXB1ReceiveStd();
+	void RXB1ReceiveValid();
+
+	void RX0PinModeOutput();
+	void RX1PinModeOutput();
+	void RXPinsModeOutput();
+	void RX0PinModeInt();
+	void RX1PinModeInt();
+	void RXPinsModeInt();
+
+	void RXB0Enable();
+	void RXB1Enable();
+	void RXPinsEnable();
+
+	void RXB0Disable();
+	void RXB1Disable();
+	void RXPinsDisable();
+
+
+	void RXB0PinHigh();
+	void RXB0PinLow();
+	void RXB1PinHigh();
+	void RXB1PinLow();
+
+	//Masks and filters
+	void setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3);
+	void resetFiltersAndMasks();
+	
+
 };
 
 #endif

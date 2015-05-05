@@ -57,7 +57,7 @@ void MCP2515::setBitRate(int bitRate){
 	switch(bitRate)
 	{
 		case 5:
-			config1 = CNF1_5;
+			config1 = CNF1_5; //values defined in header file
 			config2 = CNF2_5;
 			config3 = CNF3_5;
 			break;
@@ -244,9 +244,9 @@ void MCP2515::sendTXBuffer2()
 void MCP2515::sendTXBuffer(byte RTSCOMMAND)
 {
 	digitalWrite(_ss, LOW);
-	delay(10);
+	delay(1);
 	SPI.transfer(RTSCOMMAND);
-	delay(10);
+	delay(1);
 	digitalWrite(_ss,HIGH);
 	delay(1);
 }
@@ -282,11 +282,11 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 
 	if ((SIDL & 0x08)==0x08) //extended ID message received
 	{
-		*ext = 1;
-		if ((RXDLC & 0x40)==0x40) //extended remote message received
+		*ext = 1; //set to show extended message
+		if ((RXDLC & 0x40)==0x40) //remote message received
 		{
-			*DLC = 0;			
-			*remote = 1;			
+			*DLC = 0;			//no data received as extended		
+			*remote = 1;		//set to show message remote	
 		}
 		else
 		{
@@ -336,9 +336,9 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	// 1 = Message was aborted
 //	// 0 = Message transmitted successfully
 //bool MCP2515::ABTFTX0(){
-//ool retVal;
-//etVal = ABTF(TXB0CTRL);
-//eturn retVal;
+// 	bool retVal;
+// 	retVal = ABTF(TXB0CTRL);
+// 	return retVal;
 //}
 //bool MCP2515::ABTFTX1(){
 //	bool retVal;
@@ -473,7 +473,7 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	}
 //	modify(address, 0x03, setVal);
 //}
-//
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ////Set RTS pin modes (input or RTS on falling edge)
 ////Set as digital inputs
 //void MCP2515::setB0RTSPinInput(){
@@ -527,41 +527,41 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	UNTESTED UNTESTED UNTESTED UNTESTED UNTESTED
 //*/
 //
-//void MCP2515::RXB0ReceiveAny(){
-//	//Allow reception of any messages regardless of filters to RX Buffer 0
-//	modify(RXB0CTRL, 0x60, 0xFF);
-//}
-//void MCP2515::RXB0ReceiveExt(){
-//	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
-//	modify(RXB0CTRL, 0x60, 0x40);
-//}
-//void MCP2515::RXB0ReceiveStd(){
-//	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
-//	modify(RXB0CTRL, 0x60, 0x20);
-//}
-//void MCP2515::RXB0ReceiveValid(){
-//	//Allow reception of any messages matching filter criteria of RX Buffer 0
-//	//DEFAULT SETUP
-//	modify(RXB0CTRL, 0x60, 0x00);
-//}
-//
-//void MCP2515::RXB1ReceiveAny(){
-//	//Allow reception of any messages regardless of filters to RX Buffer 0
-//	modify(RXB1CTRL, 0x60, 0xFF);
-//}
-//void MCP2515::RXB1ReceiveExt(){
-//	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
-//	modify(RXB1CTRL, 0x60, 0x40);
-//}
-//void MCP2515::RXB1ReceiveStd(){
-//	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
-//	modify(RXB1CTRL, 0x60, 0x20);
-//}
-//void MCP2515::RXB1ReceiveValid(){
-//	//Allow reception of any messages matching filter criteria of RX Buffer 0
-//	//DEFAULT SETUP
-//	modify(RXB1CTRL, 0x60, 0x00);
-//}
+void MCP2515::RXB0ReceiveAny(){
+	//Allow reception of any messages regardless of filters to RX Buffer 0
+	modify(RXB0CTRL, 0x60, 0xFF);
+}
+void MCP2515::RXB0ReceiveExt(){
+	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
+	modify(RXB0CTRL, 0x60, 0x40);
+}
+void MCP2515::RXB0ReceiveStd(){
+	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
+	modify(RXB0CTRL, 0x60, 0x20);
+}
+void MCP2515::RXB0ReceiveValid(){
+	//Allow reception of any messages matching filter criteria of RX Buffer 0
+	//DEFAULT SETUP
+	modify(RXB0CTRL, 0x60, 0x00);
+}
+
+void MCP2515::RXB1ReceiveAny(){
+	//Allow reception of any messages regardless of filters to RX Buffer 0
+	modify(RXB1CTRL, 0x60, 0xFF);
+}
+void MCP2515::RXB1ReceiveExt(){
+	//Allow reception of extended messages that fit filter criteria of RX Buffer 0
+	modify(RXB1CTRL, 0x60, 0x40);
+}
+void MCP2515::RXB1ReceiveStd(){
+	//Allow reception of standard messages that fit filter criteria of RX Buffer 0
+	modify(RXB1CTRL, 0x60, 0x20);
+}
+void MCP2515::RXB1ReceiveValid(){
+	//Allow reception of any messages matching filter criteria of RX Buffer 0
+	//DEFAULT SETUP
+	modify(RXB1CTRL, 0x60, 0x00);
+}
 //
 //bool MCP2515::receivedRTRRXB0(){
 //	byte retVal;
@@ -602,100 +602,100 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 //	return retVal;
 //}
 //
-//void MCP2515::RX0PinModeOutput(){
-//	//Pin set as digital output
-//	modify(BFPCTRL, 0x01, 0x00);
-//}
-//void MCP2515::RX1PinModeOutput(){
-//	//Pin set as digital output
-//	modify(BFPCTRL, 0x02, 0x00);
-//}
-//void MCP2515::RXPinsModeOutput(){
-//	//Pins set as digital output
-//	RX0PinModeOutput;
-//	RX1PinModeOutput;
-//}
+void MCP2515::RX0PinModeOutput(){
+	//Pin set as digital output
+	modify(BFPCTRL, 0x01, 0x00);
+}
+void MCP2515::RX1PinModeOutput(){
+	//Pin set as digital output
+	modify(BFPCTRL, 0x02, 0x00);
+}
+void MCP2515::RXPinsModeOutput(){
+	//Pins set as digital output
+	RX0PinModeOutput();
+	RX1PinModeOutput();
+}
+
+void MCP2515::RX0PinModeInt(){
+	//Pin set as interrupt on TX buffer full
+	modify(BFPCTRL, 0x01, 0xFF);
+}
+void MCP2515::RX1PinModeInt(){
+	//Pin set as interrupt on TX buffer full
+	modify(BFPCTRL, 0x02, 0xFF);
+}
+void MCP2515::RXPinsModeInt(){
+	RX0PinModeInt();
+	RX1PinModeInt();
+}
 //
-//void MCP2515::RX0PinModeInt(){
-//	//Pin set as interrupt on TX buffer full
-//	modify(BFPCTRL, 0x01, 0xFF);
-//}
-//void MCP2515::RX1PinModeInt(){
-//	//Pin set as interrupt on TX buffer full
-//	modify(BFPCTRL, 0x02, 0xFF);
-//}
-//void MCP2515::RXPinsModeInt(){
-//	RX0PinModeInt;
-//	RX1PinModeInt;
-//}
-//
-//void MCP2515::RXB0Enable(){
-//	//RX0 Pin function enabled
-//	modify(BFPCTRL, 0x04, 0xFF);
-//}
-//void MCP2515::RXB1Enable(){
-//	//RX1 Pin function enabled
-//	modify(BFPCTRL, 0x08, 0xFF);
-//}
-//void MCP2515::RXPinsEnable(){
-//	//Enable RX Pin functions
-//	RXB0Enable;
-//	RXB1Enable;
-//}
-//
-//void MCP2515::RXB0Disable(){
-//	//RX0 Pin function enabled
-//	modify(BFPCTRL, 0x04, 0x00);
-//}
-//void MCP2515::RXB1Disable(){
-//	//RX1 Pin function enabled
-//	modify(BFPCTRL, 0x08, 0x00);
-//}
-//void MCP2515::RXPinsDisable(){
-//	//Enable RX Pin functions
-//	RXB0Disable;
-//	RXB1Disable;
-//}
-//
-//void MCP2515::RXB0PinHigh(){
-//	//set RXB0 pin high - only valid when configured as output
-//	modify(BFPCTRL, 0x10, 0xFF);
-//}
-//void MCP2515::RXB0PinLow(){
-//	//set RXB0 pin low- only valid when configured as output
-//	modify(BFPCTRL, 0x10, 0x00);
-//}
-//void MCP2515::RXB1PinHigh(){
-//	//set RXB1 pin high - only valid when configured as output
-//	modify(BFPCTRL, 0x20, 0xFF);
-//}
-//void MCP2515::RXB1PinLow(){
-//	//set RXB1 pin low- only valid when configured as output
-//	modify(BFPCTRL, 0x20, 0x00);
-//}
+void MCP2515::RXB0Enable(){
+	//RX0 Pin function enabled
+	modify(BFPCTRL, 0x04, 0xFF);
+}
+void MCP2515::RXB1Enable(){
+	//RX1 Pin function enabled
+	modify(BFPCTRL, 0x08, 0xFF);
+}
+void MCP2515::RXPinsEnable(){
+	//Enable RX Pin functions
+	RXB0Enable();
+	RXB1Enable();
+}
+
+void MCP2515::RXB0Disable(){
+	//RX0 Pin function enabled
+	modify(BFPCTRL, 0x04, 0x00);
+}
+void MCP2515::RXB1Disable(){
+	//RX1 Pin function enabled
+	modify(BFPCTRL, 0x08, 0x00);
+}
+void MCP2515::RXPinsDisable(){
+	//Disable RX Pin functions
+	RXB0Disable();
+	RXB1Disable();
+}
+
+void MCP2515::RXB0PinHigh(){
+	//set RXB0 pin high - only valid when configured as output
+	modify(BFPCTRL, 0x10, 0xFF);
+}
+void MCP2515::RXB0PinLow(){
+	//set RXB0 pin low- only valid when configured as output
+	modify(BFPCTRL, 0x10, 0x00);
+}
+void MCP2515::RXB1PinHigh(){
+	//set RXB1 pin high - only valid when configured as output
+	modify(BFPCTRL, 0x20, 0xFF);
+}
+void MCP2515::RXB1PinLow(){
+	//set RXB1 pin low- only valid when configured as output
+	modify(BFPCTRL, 0x20, 0x00);
+}
 //
 //
 ///******************
 //	MASKS AND FILTERS
 //*/
-//void MCP2515::setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3){
-//	//only works in configuration mode, up to user to put device in correct mode
-//	write(address, b0);
-//	write(address+1,b1);
-//	write(address+2,b2);
-//	write(address+3,b3);
-//}
-//void MCP2515::resetFiltersAndMasks(){
-//	setMaskOrFilter(FILTER0, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(FILTER1, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(FILTER2, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(FILTER3, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(FILTER4, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(FILTER5, 0x00,0x00,0x00,0x00);
-//	
-//	setMaskOrFilter(MASK0, 0x00,0x00,0x00,0x00);
-//	setMaskOrFilter(MASK1, 0x00,0x00,0x00,0x00);
-//}
+void MCP2515::setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3){
+	//only works in configuration mode, up to user to put device in correct mode
+	write(address, b0);
+	write(address+1,b1);
+	write(address+2,b2);
+	write(address+3,b3);
+}
+void MCP2515::resetFiltersAndMasks(){
+	setMaskOrFilter(FILTER0, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(FILTER1, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(FILTER2, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(FILTER3, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(FILTER4, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(FILTER5, 0x00,0x00,0x00,0x00);
+	
+	setMaskOrFilter(MASK0, 0x00,0x00,0x00,0x00);
+	setMaskOrFilter(MASK1, 0x00,0x00,0x00,0x00);
+}
 //
 ///******************
 //	Bit Timing
@@ -932,8 +932,7 @@ void MCP2515::write(byte address, byte data){
 void MCP2515::multiWrite(byte instruction, byte IDBytes[], byte dataBytes[], int dataSize){
 	int i;
 	digitalWrite(_ss, LOW);
-	delay(10);
-	//Serial.println("MultiWrite Function entered");
+	delay(1);
 	SPI.transfer(instruction);
 	//Serial.print("Sending ID and DLC: ");
 	for (i=0; i<5; i++)
@@ -951,7 +950,7 @@ void MCP2515::multiWrite(byte instruction, byte IDBytes[], byte dataBytes[], int
 		//Serial.print("\t");
 		SPI.transfer(dataBytes[i]);
 	}
-	delay(10);
+	delay(1);
 	digitalWrite(_ss,HIGH);
 	delay(1);
 }
