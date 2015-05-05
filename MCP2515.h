@@ -234,6 +234,8 @@ public:
 	void setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3);
 	void resetFiltersAndMasks();
 	
+	void clearMessageReception();
+	void setFilterStandardID(byte address, uint32_t ID);
 
 };
 

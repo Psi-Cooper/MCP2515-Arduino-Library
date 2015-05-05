@@ -11,7 +11,6 @@ CANCTRL allows: one shot mode, abort all pending transmissions, clock out enable
 UPDATE SOME FUNCTIONS TO INT FUNCTIONS THAT RETURN 1 0 or -1 for error!!!
 eg setBitRate, setMode
 
-
 */
 
 MCP2515::MCP2515(int ss){
@@ -244,11 +243,11 @@ void MCP2515::sendTXBuffer2()
 void MCP2515::sendTXBuffer(byte RTSCOMMAND)
 {
 	digitalWrite(_ss, LOW);
-	delay(1);
+	//delay(1);
 	SPI.transfer(RTSCOMMAND);
-	delay(1);
+	//delay(1);
 	digitalWrite(_ss,HIGH);
-	delay(1);
+	//delay(1);
 }
 
 /******************
@@ -696,6 +695,17 @@ void MCP2515::resetFiltersAndMasks(){
 	setMaskOrFilter(MASK0, 0x00,0x00,0x00,0x00);
 	setMaskOrFilter(MASK1, 0x00,0x00,0x00,0x00);
 }
+void MCP2515::setFilterStandardID(byte address, uint32_t ID){
+	//Developed for easier car testing, can set filter to standard ID value
+	//Masking first 11bits (standard ID message)
+  	canbus.setMaskOrFilter(MASK0, 0xFF, 0xE0,0x00,0x00);
+  	byte filt1, filt2, filt3, filt4;
+  	filt3 =0x00;
+  	filt4 =0x00;
+  	filt2 = (ID&0x007)<<5;
+  	filt1 = (ID&0x7F8)>>3;
+  	canbus.setMaskOrFilter(address, filt1, filt2, filt3, filt4);
+}
 //
 ///******************
 //	Bit Timing
@@ -793,6 +803,9 @@ void MCP2515::resetFiltersAndMasks(){
 //	return retVal;
 //}
 //
+void MCP2515::clearMessageReception(){
+	modify(CANINTF, 0x03, 0x00);
+}
 //void MCP2515::resetInterruptBit(byte mask){
 //	//reset interrupts using mask - page 51 of datasheet
 //	modify(CANINTF, mask, 0x00);
@@ -890,11 +903,11 @@ byte MCP2515::RXStatus(){
 */
 void MCP2515::reset(){
 	digitalWrite(_ss, LOW);
-	delay(10);
+	//delay(10);
 	SPI.transfer(RESET);	
-	delay(10);
+	//delay(10);
 	digitalWrite(_ss, HIGH);
-	delay(10);
+	//delay(10);
 }
 
 /******************
@@ -903,11 +916,11 @@ void MCP2515::reset(){
 byte MCP2515::read(byte address){
 	byte retVal;
 	digitalWrite(_ss, LOW);
-	delay(10);
+	//delay(10);
 	SPI.transfer(READ);
 	SPI.transfer(address);
 	retVal = SPI.transfer(0xFF);
-	delay(10);
+	//delay(10);
 	digitalWrite(_ss,HIGH);
 	return retVal;
 }
@@ -917,13 +930,13 @@ byte MCP2515::read(byte address){
 */
 void MCP2515::write(byte address, byte data){
 	digitalWrite(_ss, LOW);
-	delay(10);
+	//delay(10);
 	SPI.transfer(WRITE);
 	SPI.transfer(address);
 	SPI.transfer(data);
-	delay(10);
+	//delay(10);
 	digitalWrite(_ss,HIGH);
-	delay(1);
+	//delay(1);
 }
 
 /******************
@@ -932,7 +945,7 @@ void MCP2515::write(byte address, byte data){
 void MCP2515::multiWrite(byte instruction, byte IDBytes[], byte dataBytes[], int dataSize){
 	int i;
 	digitalWrite(_ss, LOW);
-	delay(1);
+	//delay(1);
 	SPI.transfer(instruction);
 	//Serial.print("Sending ID and DLC: ");
 	for (i=0; i<5; i++)
@@ -950,9 +963,9 @@ void MCP2515::multiWrite(byte instruction, byte IDBytes[], byte dataBytes[], int
 		//Serial.print("\t");
 		SPI.transfer(dataBytes[i]);
 	}
-	delay(1);
+	//delay(1);
 	digitalWrite(_ss,HIGH);
-	delay(1);
+	//delay(1);
 }
 
 /******************
@@ -961,11 +974,11 @@ void MCP2515::multiWrite(byte instruction, byte IDBytes[], byte dataBytes[], int
 void MCP2515::modify(byte address, byte mask, byte data){
 	byte retVal;
 	digitalWrite(_ss, LOW);
-	delay(10);
+	//delay(10);
 	SPI.transfer(BITMODIFY);
 	SPI.transfer(address);
 	SPI.transfer(mask);
 	SPI.transfer(data);
-	delay(10);
+	//delay(10);
 	digitalWrite(_ss,HIGH);
 }		
