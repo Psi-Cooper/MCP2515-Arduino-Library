@@ -1,16 +1,8 @@
 #include <SPI.h>
 #include "MCP2515.h"
 
-/* Function ideas/to do
-Individual interrupt cases
-General read/write functions
-Bit modify instructions
-Modify number of sample points (in CNF1-3)
-CANCTRL allows: one shot mode, abort all pending transmissions, clock out enable, clock out prescaler
-
-UPDATE SOME FUNCTIONS TO INT FUNCTIONS THAT RETURN 1 0 or -1 for error!!!
-eg setBitRate, setMode
-
+/* 
+Future work - change some functions to integer return to allow for failure cases
 */
 
 MCP2515::MCP2515(int ss){
@@ -243,11 +235,8 @@ void MCP2515::sendTXBuffer2()
 void MCP2515::sendTXBuffer(byte RTSCOMMAND)
 {
 	digitalWrite(_ss, LOW);
-	//delay(1);
 	SPI.transfer(RTSCOMMAND);
-	//delay(1);
 	digitalWrite(_ss,HIGH);
-	//delay(1);
 }
 
 /******************
@@ -272,12 +261,6 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 	EID8 = SPI.transfer(0xFF);
 	EID0 = SPI.transfer(0xFF);
 	RXDLC = SPI.transfer(0xFF); 
-
-	//Serial.println(SIDH,BIN);
-	//Serial.println(SIDL,BIN);
-	//Serial.println(EID8,BIN);
-	//Serial.println(EID0,BIN);
-	//Serial.println(RXDLC,BIN);
 
 	if ((SIDL & 0x08)==0x08) //extended ID message received
 	{
@@ -327,199 +310,200 @@ void MCP2515::readRXBuffer(byte command, byte *DLC, byte *data, uint32_t *ID, by
 }
 
 
-///******************
-//	Message Transmission Features - Datasheet section 3
-//*/
-//
-//// Message Aborted Flag Bit
-//	// 1 = Message was aborted
-//	// 0 = Message transmitted successfully
-//bool MCP2515::ABTFTX0(){
-// 	bool retVal;
-// 	retVal = ABTF(TXB0CTRL);
-// 	return retVal;
-//}
-//bool MCP2515::ABTFTX1(){
-//	bool retVal;
-//	retVal = ABTF(TXB1CTRL);
-//	return retVal;
-//}
-//bool MCP2515::ABTFTX2(){
-//	bool retVal;
-//	retVal = ABTF(TXB2CTRL);
-//	return retVal;
-//}
-//
-//bool MCP2515::ABTF(byte address){
-//	byte retVal;
-//	retVal = ((read(address)&0x40)==0x40);
-//	return retVal;
-//}
-//
-//// Message lost arbitration bit
-//	// 1 = Message lost arbitration
-//	// 0 = Message did not lose arbitration
-//bool MCP2515::MLOATX0(){
-//	bool retVal;
-//	retVal = MLOA(TXB0CTRL);
-//	return retVal;
-//}
-//bool MCP2515::MLOATX1(){
-//	bool retVal;
-//	retVal = MLOA(TXB1CTRL);
-//	return retVal;
-//}
-//bool MCP2515::MLOATX2(){
-//	bool retVal;
-//	retVal = MLOA(TXB2CTRL);
-//	return retVal;
-//}
-//
-//bool MCP2515::MLOA(byte address){
-//	byte retVal;
-//	retVal = ((read(address)&0x20)==0x20);
-//	return retVal;
-//}
-//
-//// Transmission Error Detected Bit
-//	// 1 = Bus error occurred during transmission
-//	// 0 = No bus error occurred during transmission
-//bool MCP2515::TXERRTX0(){
-//	bool retVal;
-//	retVal = TXERR(TXB0CTRL);
-//	return retVal;
-//}
-//bool MCP2515::TXERRTX1(){
-//	bool retVal;
-//	retVal = TXERR(TXB1CTRL);
-//	return retVal;
-//}
-//bool MCP2515::TXERRTX2(){
-//	bool retVal;
-//	retVal = TXERR(TXB2CTRL);
-//	return retVal;
-//}
-//
-//bool MCP2515::TXERR(byte address){
-//	byte retVal;
-//	retVal = ((read(address)&0x10)==0x10);
-//	return retVal;
-//}
-//
-//// Message Transmit Request Bit
-//	// 1 = Buffer pending transmission - cleared when sent
-//	// 0 = Not pending transmission
-//bool MCP2515::TXREQTX0(){
-//	bool retVal;
-//	retVal = TXREQ(TXB0CTRL);
-//	return retVal;
-//}
-//bool MCP2515::TXREQTX1(){
-//	bool retVal;
-//	retVal = TXREQ(TXB1CTRL);
-//	return retVal;
-//}
-//bool MCP2515::TXREQTX2(){
-//	bool retVal;
-//	retVal = TXREQ(TXB2CTRL);
-//	return retVal;
-//}
-//bool MCP2515::TXREQ(byte address){
-//	byte retVal;
-//	retVal = ((read(address)&0x08)==0x08);
-//	return retVal;
-//}
-//
-//// Abort Message Transmission
-//void MCP2515::abortTX0(){
-//	modify(TXB0CTRL, 0x08, 0x00);
-//}
-//void MCP2515::abortTX1(){
-//	modify(TXB1CTRL, 0x08, 0x00);
-//}
-//void MCP2515::abortTX2(){
-//	modify(TXB2CTRL, 0x08, 0x00);
-//}
-//
-//// Set Transmit Buffer Priority - must be done in configuration mode
-//	//By default all the same and higher buffer numbers win priority
-//void MCP2515::setPriorityTX0(transmitPriority prio){
-//	setPriority(TXB0CTRL, prio);
-//}
-//void MCP2515::setPriorityTX1(transmitPriority prio){
-//	setPriority(TXB1CTRL, prio);
-//}
-//void MCP2515::setPriorityTX2(transmitPriority prio){
-//	setPriority(TXB2CTRL, prio);
-//}
-//void MCP2515::setPriority(byte address, transmitPriority prio){
-//	byte setVal = 0x00;
-//	
-//	switch(prio)
-//	{
-//		case HIGHEST:
-//			setVal = 0x03;
-//			break;
-//		case HIGH:
-//			setVal = 0x02;
-//			break;
-//		case LOW:
-//			setVal = 0x01;
-//			break;
-//		case LOWEST:
-//			setVal = 0x00;
-//			break;
-//	}
-//	modify(address, 0x03, setVal);
-//}
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-////Set RTS pin modes (input or RTS on falling edge)
-////Set as digital inputs
-//void MCP2515::setB0RTSPinInput(){
-//	modify(TXRTSCTRL, 0x01, 0x00);
-//}
-//void MCP2515::setB1RTSPinInput(){
-//	modify(TXRTSCTRL, 0x02, 0x00);
-//}
-//void MCP2515::setB2RTSPinInput(){
-//	modify(TXRTSCTRL, 0x04, 0x00);
-//}
-//void MCP2515::setAllRTSPinsInput(){
-//	setB0RTSPinInput;
-//	setB1RTSPinInput;
-//	setB2RTSPinInput;
-//}
-////Set as RTS Pins
-//void MCP2515::setB0RTSPinRTS(){
-//	modify(TXRTSCTRL, 0x01, 0x0F);
-//}
-//void MCP2515::setB1RTSPinRTS(){
-//	modify(TXRTSCTRL, 0x02, 0x0F);
-//}
-//void MCP2515::setB2RTSPinRTS(){
-//	modify(TXRTSCTRL, 0x04, 0x0F);
-//}
-//void MCP2515::setAllRTSPinsRTS(){
-//	setB0RTSPinRTS;
-//	setB1RTSPinRTS;
-//	setB2RTSPinRTS;
-//}
-////Read RTS pin values - only valid in digital input mode
-//bool MCP2515::readB0RTS(){
-//	byte retVal;
-//	retVal = (read(TXRTSCTRL)&0x08)==0x08;
-//	return retVal;
-//}
-//bool MCP2515::readB1RTS(){
-//	byte retVal;
-//	retVal = (read(TXRTSCTRL)&0x10)==0x10;
-//	return retVal;
-//}
-//bool MCP2515::readB2RTS(){
-//	byte retVal;
-//	retVal = (read(TXRTSCTRL)&0x20)==0x20;
-//	return retVal;
-//}
+/******************
+	Message Transmission Features - Datasheet section 3
+*/
+
+// Message Aborted Flag Bit
+	// 1 = Message was aborted
+	// 0 = Message transmitted successfully
+bool MCP2515::ABTFTX0(){
+	bool retVal;
+	retVal = ABTF(TXB0CTRL);
+	return retVal;
+}
+bool MCP2515::ABTFTX1(){
+	bool retVal;
+	retVal = ABTF(TXB1CTRL);
+	return retVal;
+}
+bool MCP2515::ABTFTX2(){
+	bool retVal;
+	retVal = ABTF(TXB2CTRL);
+	return retVal;
+}
+
+bool MCP2515::ABTF(byte address){
+	byte retVal;
+	retVal = ((read(address)&0x40)==0x40);
+	return retVal;
+}
+
+// Message lost arbitration bit
+	// 1 = Message lost arbitration
+	// 0 = Message did not lose arbitration
+bool MCP2515::MLOATX0(){
+	bool retVal;
+	retVal = MLOA(TXB0CTRL);
+	return retVal;
+}
+bool MCP2515::MLOATX1(){
+	bool retVal;
+	retVal = MLOA(TXB1CTRL);
+	return retVal;
+}
+bool MCP2515::MLOATX2(){
+	bool retVal;
+	retVal = MLOA(TXB2CTRL);
+	return retVal;
+}
+
+bool MCP2515::MLOA(byte address){
+	byte retVal;
+	retVal = ((read(address)&0x20)==0x20);
+	return retVal;
+}
+
+// Transmission Error Detected Bit
+	// 1 = Bus error occurred during transmission
+	// 0 = No bus error occurred during transmission
+bool MCP2515::TXERRTX0(){
+	bool retVal;
+	retVal = TXERR(TXB0CTRL);
+	return retVal;
+}
+bool MCP2515::TXERRTX1(){
+	bool retVal;
+	retVal = TXERR(TXB1CTRL);
+	return retVal;
+}
+bool MCP2515::TXERRTX2(){
+	bool retVal;
+	retVal = TXERR(TXB2CTRL);
+	return retVal;
+}
+
+bool MCP2515::TXERR(byte address){
+	byte retVal;
+	retVal = ((read(address)&0x10)==0x10);
+	return retVal;
+}
+
+// Message Transmit Request Bit
+	// 1 = Buffer pending transmission - cleared when sent
+	// 0 = Not pending transmission
+bool MCP2515::TXREQTX0(){
+	bool retVal;
+	retVal = TXREQ(TXB0CTRL);
+	return retVal;
+}
+bool MCP2515::TXREQTX1(){
+	bool retVal;
+	retVal = TXREQ(TXB1CTRL);
+	return retVal;
+}
+bool MCP2515::TXREQTX2(){
+	bool retVal;
+	retVal = TXREQ(TXB2CTRL);
+	return retVal;
+}
+bool MCP2515::TXREQ(byte address){
+	byte retVal;
+	retVal = ((read(address)&0x08)==0x08);
+	return retVal;
+}
+
+// Abort Message Transmission
+void MCP2515::abortTX0(){
+	modify(TXB0CTRL, 0x08, 0x00);
+}
+void MCP2515::abortTX1(){
+	modify(TXB1CTRL, 0x08, 0x00);
+}
+void MCP2515::abortTX2(){
+	modify(TXB2CTRL, 0x08, 0x00);
+}
+
+// Set Transmit Buffer Priority - must be done in configuration mode
+	//By default all the same and higher buffer numbers win priority
+void MCP2515::setPriorityTX0(transmitPrio prio){
+	setPriority(TXB0CTRL, prio);
+}
+void MCP2515::setPriorityTX1(transmitPrio prio){
+	setPriority(TXB1CTRL, prio);
+}
+void MCP2515::setPriorityTX2(transmitPrio prio){
+	setPriority(TXB2CTRL, prio);
+}
+void MCP2515::setPriority(byte address, transmitPrio prio){
+	byte setVal = 0x00;
+	
+	switch(prio)
+	{
+		case HIGHEST:
+			setVal = 0x03;
+			break;
+		case HIGHER:
+			setVal = 0x02;
+			break;
+		case LOWER:
+			setVal = 0x01;
+			break;
+		case LOWEST:
+			setVal = 0x00;
+			break;
+	}
+	modify(address, 0x03, setVal);
+}
+
+
+//Set RTS pin modes (input or RTS on falling edge)
+//Set as digital inputs
+void MCP2515::setB0RTSPinInput(){
+	modify(TXRTSCTRL, 0x01, 0x00);
+}
+void MCP2515::setB1RTSPinInput(){
+	modify(TXRTSCTRL, 0x02, 0x00);
+}
+void MCP2515::setB2RTSPinInput(){
+	modify(TXRTSCTRL, 0x04, 0x00);
+}
+void MCP2515::setAllRTSPinsInput(){
+	setB0RTSPinInput();
+	setB1RTSPinInput();
+	setB2RTSPinInput();
+}
+//Set as RTS Pins
+void MCP2515::setB0RTSPinRTS(){
+	modify(TXRTSCTRL, 0x01, 0x0F);
+}
+void MCP2515::setB1RTSPinRTS(){
+	modify(TXRTSCTRL, 0x02, 0x0F);
+}
+void MCP2515::setB2RTSPinRTS(){
+	modify(TXRTSCTRL, 0x04, 0x0F);
+}
+void MCP2515::setAllRTSPinsRTS(){
+	setB0RTSPinRTS();
+	setB1RTSPinRTS();
+	setB2RTSPinRTS();
+}
+//Read RTS pin values - only valid in digital input mode
+bool MCP2515::readB0RTS(){
+	byte retVal;
+	retVal = (read(TXRTSCTRL)&0x08)==0x08;
+	return retVal;
+}
+bool MCP2515::readB1RTS(){
+	byte retVal;
+	retVal = (read(TXRTSCTRL)&0x10)==0x10;
+	return retVal;
+}
+bool MCP2515::readB2RTS(){
+	byte retVal;
+	retVal = (read(TXRTSCTRL)&0x20)==0x20;
+	return retVal;
+}
 ///******************
 //	Message Reception Features - Datasheet section 4
 //
@@ -561,46 +545,46 @@ void MCP2515::RXB1ReceiveValid(){
 	//DEFAULT SETUP
 	modify(RXB1CTRL, 0x60, 0x00);
 }
-//
-//bool MCP2515::receivedRTRRXB0(){
-//	byte retVal;
-//	retVal = read(RXB0CTRL);
-//	bool RTR;
-//	RTR = ((retVal >>3)&0x01)==1;
-//	return RTR;
-//}
-//
-//// untested
-//bool MCP2515::receivedRTRRXB1(){
-//	byte retVal;
-//	retVal = read(RXB1CTRL);
-//	bool RTR;
-//	RTR = ((retVal >>3)&0x01)==1;
-//	return RTR;
-//}
-//
-//void MCP2515::enableRXRollover(){
-//	//Enable rollover of messages from RXB0 to RXB1 if full and criteria met
-//	modify(RXB0CTRL, 0x04, 0xFF);
-//}
-//void MCP2515::disableRXRollover(){
-//	//Disable rollover of messages from RXB0 to RXB1 if full and criteria met
-//	modify(RXB0CTRL, 0x04, 0x00);
-//}
-//
-//byte MCP2515::RXB0FilterHit(){
-//	//Returns filter that accepted message
-//	byte retVal;
-//	retVal = read(RXB0CTRL)&0x01;
-//	return retVal;
-//}
-//byte MCP2515::RXB1FilterHit(){
-//	//Returns filter that accepted message
-//	byte retVal;
-//	retVal = read(RXB1CTRL)&0x07;
-//	return retVal;
-//}
-//
+
+
+bool MCP2515::receivedRTRRXB0(){
+	byte retVal;
+	retVal = read(RXB0CTRL);
+	bool RTR;
+	RTR = ((retVal >>3)&0x01)==1;
+	return RTR;
+}
+
+bool MCP2515::receivedRTRRXB1(){
+	byte retVal;
+	retVal = read(RXB1CTRL);
+	bool RTR;
+	RTR = ((retVal >>3)&0x01)==1;
+	return RTR;
+}
+
+void MCP2515::enableRXRollover(){
+	//Enable rollover of messages from RXB0 to RXB1 if full and criteria met
+	modify(RXB0CTRL, 0x04, 0xFF);
+}
+void MCP2515::disableRXRollover(){
+	//Disable rollover of messages from RXB0 to RXB1 if full and criteria met
+	modify(RXB0CTRL, 0x04, 0x00);
+}
+
+byte MCP2515::RXB0FilterHit(){
+	//Returns filter that accepted message
+	byte retVal;
+	retVal = read(RXB0CTRL)&0x01;
+	return retVal;
+}
+byte MCP2515::RXB1FilterHit(){
+	//Returns filter that accepted message
+	byte retVal;
+	retVal = read(RXB1CTRL)&0x07;
+	return retVal;
+}
+
 void MCP2515::RX0PinModeOutput(){
 	//Pin set as digital output
 	modify(BFPCTRL, 0x01, 0x00);
@@ -698,193 +682,194 @@ void MCP2515::resetFiltersAndMasks(){
 void MCP2515::setFilterStandardID(byte address, uint32_t ID){
 	//Developed for easier car testing, can set filter to standard ID value
 	//Masking first 11bits (standard ID message)
-  	canbus.setMaskOrFilter(MASK0, 0xFF, 0xE0,0x00,0x00);
+  	setMaskOrFilter(MASK0, 0xFF, 0xE0,0x00,0x00);
+  	setMaskOrFilter(MASK1, 0xFF, 0xE0,0x00,0x00);
   	byte filt1, filt2, filt3, filt4;
   	filt3 =0x00;
   	filt4 =0x00;
   	filt2 = (ID&0x007)<<5;
   	filt1 = (ID&0x7F8)>>3;
-  	canbus.setMaskOrFilter(address, filt1, filt2, filt3, filt4);
+  	setMaskOrFilter(address, filt1, filt2, filt3, filt4);
 }
-//
-///******************
-//	Bit Timing
-//*/
-//void MCP2515::SAMConfig(bool config){
-//	//Device must been in configuration mode
-//	if (config)
-//	{
-//		//Bus sampled 3 times at sample point
-//		modify(CNF2, 0x40, 0xFF);	
-//	}
-//	else
-//	{
-//		//Bus sampled single time at sample point
-//		modify(CNF2, 0x40, 0x00);
-//	}
-//}
-//
-//void MCP2515::setSOFBit(bool config){
-//	if (config)
-//	{
-//		//CLKOUT pin enabled for SOF signal
-//		modify(CNF3, 0x80, 0xFF);
-//	}
-//	else
-//	{
-//		//CLKOUT pin enabled for clockout function
-//		modify(CNF3, 0x80, 0x00);
-//	}
-//} 
-//
-////NO IDEA WHAT THIS DOES - could restrict wake up to only work when filter check passed 
-//void MCP2515::wakeUpFilterEnable(){
-//	modify(CNF3, 0x40, 0xFF);
-//}
-//void wakeUpFilterDisable(){
-//	modify(CNF3, 0x40, 0x00);
-//}
-//
-///******************
-//	Interrupts
-//*/
-//void MCP2515::MERREInt(bool config){
-//	// Interrupt on error during message reception or transmission
-//	if (config)
-//	{modify(CANINTE, 0x80, 0xFF);}
-//	else {modify(CANINTE, 0x80, 0x00);}
-//}
-//void MCP2515::WAKIEInt(bool config){
-//	// Interrupt on CAN bus activity
-//	if (config)
-//	{modify(CANINTE, 0x40, 0xFF);}
-//	else {modify(CANINTE, 0x40, 0x00);}
-//}
-//void MCP2515::ERRIEInt(bool config){
-//	// Interrupt on EFLG error condition change
-//	if (config)
-//	{modify(CANINTE, 0x20, 0xFF);}
-//	else {modify(CANINTE, 0x20, 0x00);}
-//}
-//void MCP2515::TX2IEInt(bool config){
-//	// Interrupt on TXB2 becoming empty
-//	if (config)
-//	{modify(CANINTE, 0x10, 0xFF);}
-//	else {modify(CANINTE, 0x10, 0x00);}
-//}
-//void MCP2515::TX1IEInt(bool config){
-//	// Interrupt on TXB1 becoming empty
-//	if (config)
-//	{modify(CANINTE, 0x08, 0xFF);}
-//	else {modify(CANINTE, 0x08, 0x00);}
-//}
-//void MCP2515::TX0IEInt(bool config){
-//	// Interrupt on TXB0 becoming empty
-//	if (config)
-//	{modify(CANINTE, 0x04, 0xFF);}
-//	else {modify(CANINTE, 0x04, 0x00);}
-//}
-//void MCP2515::RX1IEInt(bool config){
-//	// Interrupt when message received in RXB1
-//	if (config)
-//	{modify(CANINTE, 0x02, 0xFF);}
-//	else {modify(CANINTE, 0x02, 0x00);}
-//}
-//void MCP2515::RX0IEInt(bool config){
-//	// Interrupt when message received in RXB0
-//	if (config)
-//	{modify(CANINTE, 0x01, 0xFF);}
-//	else {modify(CANINTE, 0x01, 0x00);}
-//}
-//
-//byte MCP2515::readInterruptFlags(){
-//	byte retVal;
-//	retVal = read(CANINTF);
-//	return retVal;
-//}
-//
+
+/******************
+	Bit Timing
+*/
+void MCP2515::SAMConfig(bool config){
+	//Device must been in configuration mode
+	if (config)
+	{
+		//Bus sampled 3 times at sample point
+		modify(CNF2, 0x40, 0xFF);	
+	}
+	else
+	{
+		//Bus sampled single time at sample point
+		modify(CNF2, 0x40, 0x00);
+	}
+}
+
+void MCP2515::setSOFBit(bool config){
+	if (config)
+	{
+		//CLKOUT pin enabled for SOF signal
+		modify(CNF3, 0x80, 0xFF);
+	}
+	else
+	{
+		//CLKOUT pin enabled for clockout function
+		modify(CNF3, 0x80, 0x00);
+	}
+} 
+
+//NO IDEA WHAT THIS DOES - could restrict wake up to only work when filter check passed 
+void MCP2515::wakeUpFilterEnable(){
+	modify(CNF3, 0x40, 0xFF);
+}
+void MCP2515::wakeUpFilterDisable(){
+	modify(CNF3, 0x40, 0x00);
+}
+
+/******************
+	Interrupts
+*/
+void MCP2515::MERREInt(bool config){
+	// Interrupt on error during message reception or transmission
+	if (config)
+	{modify(CANINTE, 0x80, 0xFF);}
+	else {modify(CANINTE, 0x80, 0x00);}
+}
+void MCP2515::WAKIEInt(bool config){
+	// Interrupt on CAN bus activity
+	if (config)
+	{modify(CANINTE, 0x40, 0xFF);}
+	else {modify(CANINTE, 0x40, 0x00);}
+}
+void MCP2515::ERRIEInt(bool config){
+	// Interrupt on EFLG error condition change
+	if (config)
+	{modify(CANINTE, 0x20, 0xFF);}
+	else {modify(CANINTE, 0x20, 0x00);}
+}
+void MCP2515::TX2IEInt(bool config){
+	// Interrupt on TXB2 becoming empty
+	if (config)
+	{modify(CANINTE, 0x10, 0xFF);}
+	else {modify(CANINTE, 0x10, 0x00);}
+}
+void MCP2515::TX1IEInt(bool config){
+	// Interrupt on TXB1 becoming empty
+	if (config)
+	{modify(CANINTE, 0x08, 0xFF);}
+	else {modify(CANINTE, 0x08, 0x00);}
+}
+void MCP2515::TX0IEInt(bool config){
+	// Interrupt on TXB0 becoming empty
+	if (config)
+	{modify(CANINTE, 0x04, 0xFF);}
+	else {modify(CANINTE, 0x04, 0x00);}
+}
+void MCP2515::RX1IEInt(bool config){
+	// Interrupt when message received in RXB1
+	if (config)
+	{modify(CANINTE, 0x02, 0xFF);}
+	else {modify(CANINTE, 0x02, 0x00);}
+}
+void MCP2515::RX0IEInt(bool config){
+	// Interrupt when message received in RXB0
+	if (config)
+	{modify(CANINTE, 0x01, 0xFF);}
+	else {modify(CANINTE, 0x01, 0x00);}
+}
+
+byte MCP2515::readInterruptFlags(){
+	byte retVal;
+	retVal = read(CANINTF);
+	return retVal;
+}
+
 void MCP2515::clearMessageReception(){
 	modify(CANINTF, 0x03, 0x00);
 }
-//void MCP2515::resetInterruptBit(byte mask){
-//	//reset interrupts using mask - page 51 of datasheet
-//	modify(CANINTF, mask, 0x00);
-//}
-//*****************
-//rror functions
-//
-//byte MCP2515::readTEC(){
-//	byte retVal;
-//	retVal = read(TEC);
-//	return retVal;
-//}
-//byte MCP2515::readREC(){
-//	byte retVal;
-//	retVal = read(TEC);
-//	return retVal;
-//}
-//byte MCP2515::readEFLG(){
-//	byte retVal;
-//	retVal = read(EFLG);
-//	return retVal;
-//}
-//void MCP2515::resetRX1OVRInt(){
-//	modify(EFLG, 0x80, 0x00);
-//}
-//void MCP2515::resetRX0OVRInt(){
-//	modify(EFLG, 0x40, 0x00);
-//}
-//*****************
-//onfiguration Mode Functions
-/// requires device in config mode to work
-//
-//void MCP2515::ABATBit(bool config){
-//	//If 1 - abort all pending transmit buffers
-//	//If 0 - Terminate request to abort all pending transmit buffers
-//	if (config)
-//	{modify(CANCTRL, 0x10, 0xFF);}
-//	else {modify(CANCTRL, 0x10, 0x00);}
-//}
-//void MCP2515::OSMEnable(){
-//	//Message will only attempt transmission one time
-//	modify(CANCTRL, 0x80, 0xFF);
-//}
-//void MCP2515::OSMDisable(){
-//	//Message will reattempt transmission if required
-//	modify(CANCTRL, 0x80, 0x00);
-//}
-//void MCP2515::CLKOUTEnable(){
-//	//Clock out pin enabled
-//	modify(CANCTRL, 0x04, 0xFF);
-//}
-//void MCP2515::CLKOUTDisable(){
-//	//Clock out pin disabled
-//	modify(CANCTRL, 0x04, 0x00);
-//}
-//void MCP2515::CLKOUTPrescalar(int scalar){
-//	switch(scalar) {
-//		case 1:
-//				modify(CANCTRL, 0x03, 0x00);
-//				break;
-//		case 2:
-//				modify(CANCTRL, 0x03, 0x01);
-//				break;
-//		case 4:
-//				modify(CANCTRL, 0x03, 0x02);
-//				break;
-//		case 8:
-//				modify(CANCTRL, 0x03, 0x03);
-//				break;
-//		default:
-//				break;
-//	}
-//}
-//byte MCP2515::readICOD(){
-//	//returns 3 bit value of ICOD - interrupt flag code bits
-//	byte retVal;
-//	retVal = (read(CANSTAT)&0x0E)>>1;
-//	return retVal;
-//}
+void MCP2515::resetInterruptBit(byte mask){
+	//reset interrupts using mask - page 51 of datasheet
+	modify(CANINTF, mask, 0x00);
+}
+/******************
+Error functions
+*/
+byte MCP2515::readTEC(){
+	byte retVal;
+	retVal = read(TEC);
+	return retVal;
+}
+byte MCP2515::readREC(){
+	byte retVal;
+	retVal = read(REC);
+	return retVal;
+}
+byte MCP2515::readEFLG(){
+	byte retVal;
+	retVal = read(EFLG);
+	return retVal;
+}
+void MCP2515::resetRX1OVRInt(){
+	modify(EFLG, 0x80, 0x00);
+}
+void MCP2515::resetRX0OVRInt(){
+	modify(EFLG, 0x40, 0x00);
+}
+/*****************
+Configuration Mode Functions
+ requires device in config mode to work
+*/
+void MCP2515::ABATBit(bool config){
+	//If 1 - abort all pending transmit buffers
+	//If 0 - Terminate request to abort all pending transmit buffers
+	if (config)
+	{modify(CANCTRL, 0x10, 0xFF);}
+	else {modify(CANCTRL, 0x10, 0x00);}
+}
+void MCP2515::OSMEnable(){
+	//Message will only attempt transmission one time
+	modify(CANCTRL, 0x80, 0xFF);
+}
+void MCP2515::OSMDisable(){
+	//Message will reattempt transmission if required
+	modify(CANCTRL, 0x80, 0x00);
+}
+void MCP2515::CLKOUTEnable(){
+	//Clock out pin enabled
+	modify(CANCTRL, 0x04, 0xFF);
+}
+void MCP2515::CLKOUTDisable(){
+	//Clock out pin disabled
+	modify(CANCTRL, 0x04, 0x00);
+}
+void MCP2515::CLKOUTPrescalar(int scalar){
+	switch(scalar) {
+		case 1:
+				modify(CANCTRL, 0x03, 0x00);
+				break;
+		case 2:
+				modify(CANCTRL, 0x03, 0x01);
+				break;
+		case 4:
+				modify(CANCTRL, 0x03, 0x02);
+				break;
+		case 8:
+				modify(CANCTRL, 0x03, 0x03);
+				break;
+		default:
+				break;
+	}
+}
+byte MCP2515::readICOD(){
+	//returns 3 bit value of ICOD - interrupt flag code bits
+	byte retVal;
+	retVal = (read(CANSTAT)&0x0E)>>1;
+	return retVal;
+}
 
 
 

@@ -11,7 +11,7 @@ Integrated Mechanical and Electrical Engineering Final Year Project
 Designed to include the full functionality of the MCP2515 CAN controller
 
 Designed to be used with the CAN shield designed by Simon Cooper
-using a 16MHz oscillator. (20MHz quartz crystal support to be added)
+using a 16MHz oscillator. (20MHz quartz crystal support to be added in near future)
 */
 #define RESET_PIN 2
 #define INT_PIN 3
@@ -100,6 +100,12 @@ using a 16MHz oscillator. (20MHz quartz crystal support to be added)
 #define RTSTXB2		0x84		// Request to send TX buffer 2 		- Incorrect in previous library
 
 /**********************
+	Error Counters
+**********************/
+#define TEC 		0x1C		//TEC register
+#define REC 		0x1D 		//REC Register
+
+/**********************
 	Baud Rate Config
 **********************/
 /***
@@ -155,51 +161,48 @@ values for 20MHz resonator when I get.
 
 enum MCP2515Mode {CONFIGURATION, NORMAL, LISTEN, SLEEP, LOOPBACK};
 enum messageType {STANDARD, EXTENDED, STANDARDREMOTE, EXTENDEDREMOTE};
-//enum transmitPriority {HIGHEST, HIGH, LOW, LOWEST};
+enum transmitPrio {HIGHEST, HIGHER, LOWER, LOWEST};
 
 class MCP2515
 {
 private:
 	int _ss;	// spi slave select pin
-	int _reset;	// reset pin if connected (reset can be controlled over SPI instead)
-	// could need other pins here, ie interrupts and TX and RX interrupts
+
 public:
 	MCP2515(int ss); //input slave select pin - allows multiple buses
-	//MPC2515();
 
-	//NEED TO INCLUDE ALL FUNCTIONS FROM HERE
-	//START WITH MODE SET AND RESET FUNCTIONS
 
 	void begin();	//set up controller
 	
-	void setBitRate(int bitRate);
-	//void setMode(MCP2515Mode mode);
-	int setMode(MCP2515Mode mode);
+	void setBitRate(int bitRate);	//set device bit rate
 	
+	int setMode(MCP2515Mode mode);	//set device mode
 	
+	//Functions for loading transmission buffers
 	void loadTXBuffer(uint32_t ID, byte command, messageType frameType, int DLC, byte dataBytes[]);
 	void loadTXBuffer0(uint32_t ID, messageType frameType, int dataLength, byte dataBytes[]);
 	void loadTXBuffer1(uint32_t ID, messageType frameType, int dataLength, byte dataBytes[]);
 	void loadTXBuffer2(uint32_t ID, messageType frameType, int dataLength, byte dataBytes[]);
 
+	//functions for transmitting loaded buffers
 	void sendTXBuffer0();
 	void sendTXBuffer1();
 	void sendTXBuffer2();
 	void sendTXBuffer(byte RTSCOMMAND);
 
-
+	//functions for reading receive buffers
 	void readRXBuffer(byte command, byte *DLC, byte *data, uint32_t* ID, byte* ext, byte* remote);
 	void readRXBuffer0(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote);
 	void readRXBuffer1(byte *DLC, byte *data, uint32_t *ID, byte* ext, byte* remote);
 
-	byte RXStatus();
-	void reset();	//reset controller - perform on startup
-	byte read(byte address);
-	void write(byte address, byte data);
-	void multiWrite(byte address, byte IDBytes[], byte dataBytes[], int DLC);
-	void modify(byte address, byte mask, byte data);
+	byte RXStatus();	//RXStatus command, returns information of messages received
+	void reset();		//reset controller - perform on startup
+	byte read(byte address);	//SPI read command
+	void write(byte address, byte data);	//SPI write command
+	void multiWrite(byte address, byte IDBytes[], byte dataBytes[], int DLC);	//Function for writing to TX Buffers
+	void modify(byte address, byte mask, byte data);	//SPI modify command
 
-	//Message Reception
+	//Message Reception Buffers - change what type of messages each RX buffer can receive
 	void RXB0ReceiveAny();
 	void RXB0ReceiveExt();
 	void RXB0ReceiveStd();
@@ -209,6 +212,7 @@ public:
 	void RXB1ReceiveStd();
 	void RXB1ReceiveValid();
 
+	//Change function of RX pins on MCP2515
 	void RX0PinModeOutput();
 	void RX1PinModeOutput();
 	void RXPinsModeOutput();
@@ -216,15 +220,17 @@ public:
 	void RX1PinModeInt();
 	void RXPinsModeInt();
 
+	//Enable the RX pins on MCP2515
 	void RXB0Enable();
 	void RXB1Enable();
 	void RXPinsEnable();
 
+	//Disable the RX pins on MCP2515
 	void RXB0Disable();
 	void RXB1Disable();
 	void RXPinsDisable();
 
-
+	//Set RX pins high or Low if used as digital outputs
 	void RXB0PinHigh();
 	void RXB0PinLow();
 	void RXB1PinHigh();
@@ -233,9 +239,123 @@ public:
 	//Masks and filters
 	void setMaskOrFilter(byte address, byte b0, byte b1, byte b2, byte b3);
 	void resetFiltersAndMasks();
-	
-	void clearMessageReception();
 	void setFilterStandardID(byte address, uint32_t ID);
+	
+	void clearMessageReception();	//clear message reception state
+
+	//Flag for checking whether TXbuffer message was aborted(1) or transmitted(0)
+	bool ABTFTX0();
+	bool ABTFTX1();
+	bool ABTFTX2();
+	bool ABTF(byte address);
+
+	//Flag for checking whether TXbuffer message lost arbitration(1) or won(0)
+	bool MLOATX0();
+	bool MLOATX1();
+	bool MLOATX2();
+	bool MLOA(byte address);
+
+	//Flag for checking whether bus error occured during transmission of buffer(1) or no error(0)
+	bool TXERRTX0();
+	bool TXERRTX1();
+	bool TXERRTX2();
+	bool TXERR(byte address);
+
+	//Flag for checking whether TXBuffer is pending transmission(1) or not pending(0)
+	bool TXREQTX0();
+	bool TXREQTX1();
+	bool TXREQTX2();
+	bool TXREQ(byte address);
+
+	//Abort message transmission on TXBuffers
+	void abortTX0();
+	void abortTX1();
+	void abortTX2();
+
+	//Set priority of TX buffers - determines transmission order {HIGHEST, HIGH, LOW, LOWEST};
+	void setPriorityTX0(transmitPrio prio);
+	void setPriorityTX1(transmitPrio prio);
+	void setPriorityTX2(transmitPrio prio);	
+	void setPriority(byte address, transmitPrio prio);
+
+	//Set TXRTS pins on MCP2515 as digital Inputs
+	void setB0RTSPinInput();
+	void setB1RTSPinInput();
+	void setB2RTSPinInput();
+	void setAllRTSPinsInput();
+
+	//Set TXRTS pins on MCP2515 as request to send pins - message send on falling edge
+	void setB0RTSPinRTS();
+	void setB1RTSPinRTS();
+	void setB2RTSPinRTS();
+	void setAllRTSPinsRTS();
+
+	//Read value input on TXRTS pins of MCP2515 - only valid when set up as digital inputs
+	bool readB0RTS();
+	bool readB1RTS();
+	bool readB2RTS();
+
+	//Flag check to see if remote message received in RX Buffers
+	bool receivedRTRRXB0();
+	bool receivedRTRRXB1();
+
+	//Enable or disable messages hitting RXB0 criteria to rollover to RXB1 if RXB0 full
+	void enableRXRollover();
+	void disableRXRollover();	
+
+	//Returns which filter allowed a message through- can be used to quickly check for specific ID if configured
+	byte RXB0FilterHit();
+	byte RXB1FilterHit();
+
+	//Set how many times CAN lines sampled at sampling point - 1 for three times, 0 for just once (default)
+	void SAMConfig(bool config);
+
+	//Set whether clockout pin of mcp2515 is for a SOF (start of frame) signal (1), or used as a clock out (0)
+	void setSOFBit(bool config);
+
+	//Enable or disable the wakeup filter - sets up a low pass filter function so that device doesn't wake up when short glitches on CAN bus occurs
+	void wakeUpFilterEnable();
+	void wakeUpFilterDisable();
+
+	//Enable(1) or disable(0) the MCP2515 from generating interrupts in following conditions
+	void MERREInt(bool config);		//error during message reception or transmission
+	void WAKIEInt(bool config);		//CAN Bus activity
+	void ERRIEInt(bool config);		//EFLG error condition change (error flags)
+	void TX2IEInt(bool config);		//TX2 Buffer emptying
+	void TX1IEInt(bool config);		//TX1 Buffer emptying
+	void TX0IEInt(bool config);		//TX0 Buffer emptying
+	void RX1IEInt(bool config);		//RX1 Buffer filling
+	void RX0IEInt(bool config);		//RX0 Buffer filling
+	
+	//Read state of interrupt flags - returns whole CANINTF register - see datasheet for details
+	byte readInterruptFlags();
+	//Reset Interrupts using mask
+	void resetInterruptBit(byte mask);
+
+	//Error functions
+	byte readTEC();			//Read Transmission error count
+	byte readREC();			//Read Reception error count
+	byte readEFLG();		//Read error flags register
+	void resetRX1OVRInt();	//Reset RX1 buffer overflow error
+	void resetRX0OVRInt();	//Reset RX0 buffer overflow error
+
+	//Configuration Mode Functions - device must be in CONFIG mode to run
+	//(1)-abort all pending transmissions, (0)-terminate abort request
+	void ABATBit(bool config);	
+
+	//Enable or Disable one shot mode - gives messages one change to transmit (off by default)	
+	void OSMEnable();				
+	void OSMDisable();
+
+	//Enable or Disable the Clock out pin on MCP2515
+	void CLKOUTEnable();
+	void CLKOUTDisable();
+	
+	//Change the prescaler value of the clock out pin - options of [1 2 4 8]
+	void CLKOUTPrescalar(int scalar);
+
+	//Read the ICOD register - interrupt flag code bits. See datasheet for more information
+	byte readICOD();
 
 };
 
